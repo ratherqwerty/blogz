@@ -36,15 +36,11 @@ def not_valid(field):
     else:
         return False
 
-#@app.route("/signup", methods=["POST"])
-#def validate():
-   
 @app.before_request
 def require_login():
     allowed_routes = ['login', 'signup', 'list_blogs', 'index']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
-
 
 @app.route('/logout')
 def logout():
@@ -52,30 +48,42 @@ def logout():
     return redirect('/blog')
 
 @app.route('/blog', methods=['GET'])
-def list_bloggers_blogs():
-    if request.method=='GET':
-        guys_blogs = Blogs.query.get('owner_id')
-        return render_template('blog.html', title="This Person's Blog", blogs=guys_blogs)
+def list_blogs():
+    if request.args:        
+
+        blogger_id = request.args.get('id')
+        ind_blog = Blog.query.filter_by(owner_id=blogger_id)
+        blog_id = User.query.get('id')
+
+        if blogger_id == blog_id:
+            return render_template('singleUser.html', title="This Blogger's Page", blogs=ind_blog)
+        
+        else:
+            return render_template('singleUser.html', title="Specific Post", blogs=ind_blog)       
+
+    else:
+        all_blogs = Blog.query.all()
+        return render_template('allblogs.html', title="All the Blogs!", blogs=all_blogs)
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def posting():    
     if request.method == 'POST':
        newpost_title = request.form['title']
        newpost_post = request.form["body"]
-       owner = request.args.get('id')
+       username = session['username']
+       
+       owner = User.query.filter_by(username=username).first()
 
        newblog = Blog(newpost_title, newpost_post, owner)
        db.session.add(newblog)
        db.session.commit()
-
-       #return redirect('/blog')
-            
-       return render_template('newpost.html', title="Your New Post!")
+               
+       return redirect('/blog')
 
     if request.method == 'GET':
         return render_template('newpost.html', title="Your New Post!")
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST', 'GET'])#WORKS! DONT TOUCH!
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -85,13 +93,14 @@ def login():
         if user and user.password == password:
             session['username'] = username
             flash("Logged in")
-            return redirect('/')
+            return redirect('/newpost')
+        elif user and user.password != password:
+            flash('Incorrect password', 'error')
         else:
-            flash('User password is incorrect, or user does not exist', 'error')
-            
+            flash('Username does not exist', 'error')
     return render_template('login.html')
 
-@app.route('/signup', methods=['POST', 'GET'])
+@app.route('/signup', methods=['POST', 'GET'])#WORKS! DONT TOUCH!
 def signup():
     if request.method == 'POST':
         username = request.form['username']
@@ -120,6 +129,8 @@ def signup():
             pass
 
             existing_user = User.query.filter_by(username=username).first()
+            existing_user_pw = User.query.filter_by(password=password).first()
+
             if not existing_user:
                 new_user = User(username, password)
                 db.session.add(new_user)
@@ -127,7 +138,9 @@ def signup():
 
                 session['username'] = username
 
-                return redirect('/')
+                return redirect('/newpost')
+            elif existing_user and not existing_user_pw:
+                flash('Username already exists', 'error')
             else:
                 flash('User already exists', 'error')
                 return redirect('/login')
@@ -144,20 +157,20 @@ def signup():
    # else:
 def index():   
 
-   # if request.args:
-      #  blog_id = request.args.get('id')
-     #   ind_blog = Blog.query.get(blog_id)
-     #   get_username = User.query.get('username')
-     #   return render_template('allblogs.html',title="Build a Blog!", blog=ind_blog, users=get_username)
+   #if request.args:
+     # blog_id = request.args.get('id')
+      #ind_blog = Blog.query.filter_by(owner_id=blog_id)
+      #get_username = User.query.get('username')
+      #return render_template('singleUser.html',title="User's Page!", blog=ind_blog)
     #else:
    # if request.method=='GET':
    #     blogger_page = request.args.get('id')
         #return redirect('/blog')
     #    return render_template('index.html', title="Someone's Blogs!", id=blogger_page)
 
-   # else:
-        all_blogs = User.query.all()
-        return render_template('index.html', title="blog users!", users=all_blogs)
+   #else:
+    all_blogs = User.query.all()
+    return render_template('index.html', title="blog users!", users=all_blogs)
   
     
 if __name__ == '__main__':

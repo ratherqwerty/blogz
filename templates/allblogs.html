@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>blog users!</h1>
+    <h1>Every Post by Everyone Ever!</h1>
     <hr>
     
     {% if blogs|length == 0 %}
@@ -13,6 +13,8 @@
             <a href = "/blog?id={{blog['id']}}">{{blog['title']}}</a>
             <hr>
             {{blog['body']}}
+            <br>
+            <p>Written by <a href=>{{blog.owner.username}}</a></p>
             <hr>
             {% endfor %}
         </ul>
