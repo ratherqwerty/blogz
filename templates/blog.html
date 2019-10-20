@@ -2,8 +2,14 @@
 
 {% block content %}
 
-    <h1>{{blog['title']}}</h1>
-    <hr>
-    {{blog['body']}}
+    <ul>
+        {% for blog in blogs %}
+            <h1>{{blog['title']}}</h1>
+            <br>
+            <p>Written by {{'id'}}</p>
+            <hr>
+            {{blog['body']}}            
+        {% endfor %}
+    </ul>        
       
 {% endblock %}
