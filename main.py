@@ -51,10 +51,11 @@ def logout():
     del session['username']
     return redirect('/blog')
 
-@app.route('/blog', methods=['POST','GET'])
+@app.route('/blog', methods=['GET'])
 def list_bloggers_blogs():
-    guys_blogs = Blog.query.get('owner_id')
-    return render_template('blog.html', title="This Person's Blog", id=guys_blogs)
+    if request.method=='GET':
+        guys_blogs = Blogs.query.get('owner_id')
+        return render_template('blog.html', title="This Person's Blog", blogs=guys_blogs)
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def posting():    
@@ -149,12 +150,12 @@ def index():
      #   get_username = User.query.get('username')
      #   return render_template('allblogs.html',title="Build a Blog!", blog=ind_blog, users=get_username)
     #else:
-    if request.method=='GET':
-        blogger_page = request.args.get('id')
+   # if request.method=='GET':
+   #     blogger_page = request.args.get('id')
         #return redirect('/blog')
-        return render_template('index.html', title="Someone's Blogs!", id=blogger_page)
+    #    return render_template('index.html', title="Someone's Blogs!", id=blogger_page)
 
-    else:
+   # else:
         all_blogs = User.query.all()
         return render_template('index.html', title="blog users!", users=all_blogs)
   
