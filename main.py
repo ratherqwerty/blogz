@@ -51,15 +51,18 @@ def logout():
 def list_blogs():
     if request.args:        
 
-        blogger_id = request.args.get('id')
-        ind_blog = Blog.query.filter_by(owner_id=blogger_id)
-        blog_id = User.query.get('id')
+        blog_id = request.args.get('id')
+        blogger_id = request.args.get('user')    
 
-        if blogger_id == blog_id:
+        if blogger_id:
+            ind_blog = Blog.query.filter_by(owner_id=blogger_id)
+
             return render_template('singleUser.html', title="This Blogger's Page", blogs=ind_blog)
         
         else:
-            return render_template('singleUser.html', title="Specific Post", blogs=ind_blog)       
+            ind_blog = Blog.query.filter_by(id=blog_id)
+
+            return render_template('blog.html', title="Specific Post", blogs=ind_blog)       
 
     else:
         all_blogs = Blog.query.all()
