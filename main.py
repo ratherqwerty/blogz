@@ -55,9 +55,9 @@ def list_blogs():
         blogger_id = request.args.get('user')    
 
         if blogger_id:
-            ind_blog = Blog.query.filter_by(owner_id=blogger_id)
+            ind_blogger = Blog.query.filter_by(owner_id=blogger_id)
 
-            return render_template('singleUser.html', title="This Blogger's Page", blogs=ind_blog)
+            return render_template('singleUser.html', title="This Blogger's Page", blogs=ind_blogger)
         
         else:
             ind_blog = Blog.query.filter_by(id=blog_id)
@@ -171,6 +171,11 @@ def index():
         #return redirect('/blog')
     #    return render_template('index.html', title="Someone's Blogs!", id=blogger_page)
 
+   #else:
+   #if request.method=='GET':
+       #user_id = request.args.get('id')
+       #return render_template('blog.html', title="Every Post by this User Ever!", users=user_id)
+       #return redirect('/blog')
    #else:
     all_blogs = User.query.all()
     return render_template('index.html', title="blog users!", users=all_blogs)
