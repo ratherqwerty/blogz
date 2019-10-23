@@ -151,32 +151,7 @@ def signup():
     return render_template('signup.html')
 
 @app.route('/', methods=['POST', 'GET'])
-#def list_blogs():
-    #if request.args:
-     #   blogger = request.args.get('id')
-     #   ind_blogger = Blog.query.get(blogger)
-      
-      #  return render_template('allblogs.html',title="Blogger Page", blogs=ind_blogger)
-   # else:
 def index():   
-
-   #if request.args:
-     # blog_id = request.args.get('id')
-      #ind_blog = Blog.query.filter_by(owner_id=blog_id)
-      #get_username = User.query.get('username')
-      #return render_template('singleUser.html',title="User's Page!", blog=ind_blog)
-    #else:
-   # if request.method=='GET':
-   #     blogger_page = request.args.get('id')
-        #return redirect('/blog')
-    #    return render_template('index.html', title="Someone's Blogs!", id=blogger_page)
-
-   #else:
-   #if request.method=='GET':
-       #user_id = request.args.get('id')
-       #return render_template('blog.html', title="Every Post by this User Ever!", users=user_id)
-       #return redirect('/blog')
-   #else:
     all_blogs = User.query.all()
     return render_template('index.html', title="blog users!", users=all_blogs)
   
